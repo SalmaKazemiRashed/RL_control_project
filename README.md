@@ -100,3 +100,10 @@ make -j
 ```
 
 ## Visualize log file
+### 2D
+I visualized robot motion in 2D by computing (x, y) positions from joint angles(q0...q5) and plotting them with matplotlib, creating an animated linkage of the robot’s joints. 
+![2D Motion](Logs/2D_animation.gif)
+
+
+For 3D, we map each joint angle to its corresponding PyBullet joint using setJointMotorControl2, then step the simulation and render the robot from a camera view to see its full 3D motion.
+![3D Motion](Logs/3D_humanoid_map_joints.png)
