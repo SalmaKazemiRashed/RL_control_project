@@ -132,5 +132,46 @@ using setJointMotorControl2, then step the simulation and render the robot from 
 ![Right_arm](Logs/humanoid_motion.gif)
 
 
+### Vision Language Action (VLA)
+
+‍```plaintext
+Humanoid
+ ├─ camera image (vision)
+ ├─ instruction tokens (language)
+ └─ joint state
+        ↓
+VLA Policy (RL)
+ ├─ vision encoder
+ ├─ language encoder
+ ├─ fusion
+ └─ linear policy
+        ↓
+     action
+        ↓
+       PID
+        ↓
+Joint torques
+```
+
+With adding this we will have file structure as follows:
 
 
+```plaintext
+src/
+├── main.cpp
+├── robot/
+│   ├── humanoid.h
+│   └── humanoid.cpp
+├── control/
+│   ├── pid.h
+│   └── pid.cpp
+├── RL/
+│   ├── policy.h
+│   ├── policy.cpp
+│   └── vla.h
+│   └── vla.cpp
+├── system/
+│   ├── latency.h
+│   ├── latency.cpp
+│   └── logger.h
+‍‍```
