@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-
+/*
 class Humanoid {
 public:
     Humanoid(int joints);
@@ -14,4 +14,15 @@ public:
 private:
     int n;
     std::vector<double> q, dq;
+};
+*/
+
+
+class Humanoid {
+public:
+    std::vector<double> getCameraImage();
+    std::vector<int> getInstruction();
+    std::vector<double> getJointState();
+
+    void applyAction(const std::vector<double>& action);
 };

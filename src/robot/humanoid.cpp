@@ -1,5 +1,4 @@
-// Here we define a very simple humanoid joint dynamics model:
-
+/*
 #include "humanoid.h"
 #include <random>
 
@@ -23,3 +22,22 @@ void Humanoid::step(const std::vector<double>& torques, double dt) {   // step()
 
 std::vector<double> Humanoid::get_positions() const { return q; }           // get_positions() / get_velocities() return the current joint states
 std::vector<double> Humanoid::get_velocities() const { return dq; }
+*/
+
+#include "humanoid.h"
+
+std::vector<double> Humanoid::getCameraImage() {
+    return std::vector<double>(1024, 0.5);
+}
+
+std::vector<int> Humanoid::getInstruction() {
+    return {12, 87, 203}; // 
+}
+
+std::vector<double> Humanoid::getJointState() {
+    return std::vector<double>(6, 0.0);
+}
+
+void Humanoid::applyAction(const std::vector<double>& action) {
+    // send to PID controller
+}
