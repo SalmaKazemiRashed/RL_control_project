@@ -1,4 +1,4 @@
-#include "vla.h"
+/*#include "vla.h"
 #include <algorithm>
 
 static constexpr int IMAGE_DIM = 1024;
@@ -51,4 +51,39 @@ std::vector<double> VLA_Policy::act(const Observation& obs) {
     std::vector<double> action(ACTIONS, 0.0);
     action[best] = 1.0;
     return action;
+}
+*/
+
+// VLA policy
+#include "vla.h"
+#include <algorithm>
+#include <chrono>
+
+VLA_Policy::VLA_Policy(int num_joints_, int num_actions_, double epsilon_, double alpha_, double gamma_)
+    : num_joints(num_joints_), num_actions(num_actions_), epsilon(epsilon_), alpha(alpha_), gamma(gamma_),
+      q_table(num_joints_, std::vector<double>(num_actions_, 0.0)), last_actions(num_joints_, 0),
+      uni_dist(0.0, 1.0), action_dist(0, num_actions_ - 1)
+{
+    rng.seed(std::chrono::steady_clock::now().time_since_epoch().count());
+}
+
+int VLA_Policy::select_action(int joint_idx) {
+    double r = uni_dist(rng);
+    int action;
+    if (r < epsilon) {
+        // Explore
+        action = action_dist(rng);
+    } else {
+        // Exploit
+        auto max_it = std::max_element(q_table[joint_idx].begin(), q_table[joint_idx].end());
+        action = std::distance(q_table[joint_idx].begin(), max_it);
+    }
+    last_actions[joint_idx] = action;
+    return action;
+}
+
+void VLA_Policy::update_q(int joint_idx, int action, double reward, int next_action) {
+    double q_predict = q_table[joint_idx][action];
+    double q_target = reward + gamma * q_table[joint_idx][next_action];
+    q_table[joint_idx][action] += alpha * (q_target - q_predict);
 }
