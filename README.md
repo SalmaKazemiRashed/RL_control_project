@@ -134,7 +134,8 @@ using setJointMotorControl2, then step the simulation and render the robot from 
 
 ### Vision Language Action (VLA)
 
-‍```plaintext
+
+```plaintext
 Humanoid
  ├─ camera image (vision)
  ├─ instruction tokens (language)
@@ -151,9 +152,11 @@ VLA Policy (RL)
        PID
         ↓
 Joint torques
+
 ```
 
 With adding this we will have file structure as follows:
+
 
 
 ```plaintext
@@ -174,4 +177,5 @@ src/
 │   ├── latency.h
 │   ├── latency.cpp
 │   └── logger.h
-‍‍```
+‍‍
+```
