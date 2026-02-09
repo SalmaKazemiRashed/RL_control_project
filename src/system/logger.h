@@ -33,8 +33,41 @@ private:
 };
 */
 #pragma once
+#include <fstream>
+#include <vector>
+#include <string>
 #include <iostream>
 
-inline void log(const char* msg) {
-    std::cout << msg << std::endl;
-}
+class Logger {
+public:
+    Logger(const std::string& filename) : file(filename, std::ios::out) {
+        if(!file.is_open()){
+            std::cerr << "Failed to open log file: " << filename << std::endl;
+        }
+    }
+
+    ~Logger(){
+        if(file.is_open()) file.close();
+    }
+
+    // Write CSV header
+    void write_header(const std::vector<std::string>& header){
+        for(size_t i=0;i<header.size();i++){
+            file << header[i];
+            if(i < header.size()-1) file << ",";
+        }
+        file << "\n";
+    }
+
+    // Log a vector of doubles as a CSV row
+    void log_vector(const std::vector<double>& data){
+        for(size_t i=0;i<data.size();i++){
+            file << data[i];
+            if(i < data.size()-1) file << ",";
+        }
+        file << "\n";
+    }
+
+private:
+    std::ofstream file;
+};

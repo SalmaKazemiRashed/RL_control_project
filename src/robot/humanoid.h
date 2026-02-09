@@ -1,6 +1,6 @@
-#pragma once
-#include <vector>
+
 /*
+
 class Humanoid {
 public:
     Humanoid(int joints);
@@ -17,12 +17,32 @@ private:
 };
 */
 
+#pragma once
+#include <vector>
+#include <opencv2/opencv.hpp>
 
 class Humanoid {
 public:
-    std::vector<double> getCameraImage();
-    std::vector<int> getInstruction();
-    std::vector<double> getJointState();
+    Humanoid();
 
+    // Returns current camera image
+    cv::Mat getCameraImage();
+
+    // Returns number of joints
+    int get_num_joints() const;
+
+    // Returns current joint positions
+    std::vector<double> getJointPositions() const;
+
+    // Apply joint actions (from PID or policy)
     void applyAction(const std::vector<double>& action);
+
+    // Step the physics simulation
+    void stepSimulation();
+
+    // Compute reward based on current state or actions
+    double computeReward() const;
+
+private:
+    std::vector<double> joint_positions;
 };

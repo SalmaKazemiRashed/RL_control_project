@@ -25,19 +25,46 @@ std::vector<double> Humanoid::get_velocities() const { return dq; }
 */
 
 #include "humanoid.h"
+#include <opencv2/opencv.hpp>
+#include <algorithm>
+#include <iostream>
 
-std::vector<double> Humanoid::getCameraImage() {
-    return std::vector<double>(1024, 0.5);
+Humanoid::Humanoid() {
+    joint_positions = std::vector<double>(6, 0.0);
 }
 
-std::vector<int> Humanoid::getInstruction() {
-    return {12, 87, 203}; // 
+// Dummy camera image: return a grayscale OpenCV image
+cv::Mat Humanoid::getCameraImage() {
+    cv::Mat image(64, 64, CV_8UC3, cv::Scalar(128,128,128));
+    return image;
 }
 
-std::vector<double> Humanoid::getJointState() {
-    return std::vector<double>(6, 0.0);
+int Humanoid::get_num_joints() const {
+    return static_cast<int>(joint_positions.size());
+}
+
+std::vector<double> Humanoid::getJointPositions() const {
+    return joint_positions;
 }
 
 void Humanoid::applyAction(const std::vector<double>& action) {
-    // send to PID controller
+    for(size_t i=0;i<joint_positions.size();i++){
+        joint_positions[i] += action[i];
+        // clip to joint limits [-1.5, 1.5]
+        if(joint_positions[i] > 1.5) joint_positions[i] = 1.5;
+        if(joint_positions[i] < -1.5) joint_positions[i] = -1.5;
+    }
+}
+
+void Humanoid::stepSimulation() {
+    // placeholder: in real code, advance physics
+}
+
+double Humanoid::computeReward() const {
+    // Example: reward for keeping joints near 0 (standing upright)
+    double reward = 0.0;
+    for(double q : joint_positions){
+        reward -= q*q; // energy penalty
+    }
+    return reward;
 }

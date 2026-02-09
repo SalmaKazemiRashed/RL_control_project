@@ -1,13 +1,17 @@
 #pragma once
+#include <vector>
 
-class PID {
+class PIDController {
 public:
-    PID(double kp, double ki, double kd);
+    // Constructor: number of joints
+    PIDController(int num_joints);
 
-    double compute(double target, double current, double dt);
+    // Apply target actions to the joints
+    void apply(const std::vector<double>& target_positions);
 
 private:
-    double kp, ki, kd;
-    double prev_error;
-    double integral;
+    int num_joints;
+    std::vector<double> prev_errors;
+    std::vector<double> integral;
+    double Kp, Ki, Kd;
 };

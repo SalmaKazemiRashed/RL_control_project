@@ -47,30 +47,72 @@ int main() {
     return 0;
 }
 */
-
-#include <iostream>
 #include "robot/humanoid.h"
-#include "RL/vla.h"
+#include "control/pid.h"
+#include "RL/vla_policy.h"
+#include "system/logger.h"
+
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <vector>
+#include <string>
 
 int main() {
+    // -------------------------
+    // Initialize robot, PID, VLA policy, logger
+    // -------------------------
     Humanoid robot;
-    VLA_Policy policy;
+    PIDController pid(robot.get_num_joints());
+    VLA_Policy policy(robot.get_num_joints());
 
-    for (int step = 0; step < 10; ++step) {
-        Observation obs;
-        obs.image = robot.getCameraImage();
-        obs.language = robot.getInstruction();
-        obs.state = robot.getJointState();
+    Logger logger("vla_log.csv");
+    logger.write_header({"q0","q1","q2","q3","q4","q5"});
 
-        auto action = policy.act(obs);
+    std::string instruction = "walk forward";
 
-        std::cout << "Step " << step << " | Action: ";
-        for (double a : action)
-            std::cout << a << " ";
-        std::cout << std::endl;
+    const int num_steps = 200;   // number of timesteps to simulate
 
-        robot.applyAction(action);
+    for(int t = 0; t < num_steps; t++) {
+        // -------------------------
+        // Get camera image
+        // -------------------------
+        cv::Mat image = robot.getCameraImage();
+
+        // -------------------------
+        // Get joint actions from VLA policy
+        // -------------------------
+        std::vector<double> actions = policy.select_action(image, instruction);
+
+        // -------------------------
+        // Apply actions via PID controller
+        // -------------------------
+        pid.apply(actions);
+        robot.applyAction(actions);
+
+        // -------------------------
+        // Step simulation
+        // -------------------------
+        robot.stepSimulation();
+
+        // -------------------------
+        // Log joint positions
+        // -------------------------
+        std::vector<double> joint_positions = robot.getJointPositions();
+        logger.log_vector(joint_positions);
+
+        // -------------------------
+        // Compute reward and update policy
+        // -------------------------
+        double reward = robot.computeReward();
+        policy.update_policy(actions, reward);
+
+        // Optional: print progress every 20 steps
+        if(t % 20 == 0) {
+            std::cout << "Step " << t 
+                      << " | Reward: " << reward << std::endl;
+        }
     }
 
+    std::cout << "Simulation finished. Log saved to vla_log.csv" << std::endl;
     return 0;
 }

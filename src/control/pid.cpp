@@ -1,21 +1,29 @@
 #include "pid.h"
-/*
-PID::PID(double kp_, double ki_, double kd_)
-    : kp(kp_), ki(ki_), kd(kd_), prev_error(0.0), integral(0.0) {}
+#include <algorithm>
+#include <iostream>
 
-double PID::compute(double target, double current, double dt) {
-    double error = target - current;
-    integral += error * dt;
-    double derivative = (error - prev_error) / dt;
-    prev_error = error;
+PIDController::PIDController(int nj)
+    : num_joints(nj), prev_errors(nj, 0.0), integral(nj, 0.0) {
 
-    return kp * error + ki * integral + kd * derivative;
+    Kp = 150.0;  // proportional gain
+    Ki = 0.0;    // integral gain
+    Kd = 1.0;    // derivative gain
 }
-*/
 
-#pragma once
-#include "pid.h"
+// Apply actions to the joints (placeholder)
+void PIDController::apply(const std::vector<double>& target_positions) {
+    // Here we just print the target positions
+    // In real code, compute PID to reach targets
+    for(int i=0;i<num_joints;i++){
+        double error = target_positions[i]; // assuming current pos = 0
+        integral[i] += error;
+        double derivative = error - prev_errors[i];
+        double output = Kp*error + Ki*integral[i] + Kd*derivative;
+        prev_errors[i] = error;
 
-double PID::step(double target, double current) {
-    return target - current;
+        // Send output to joint motors (here just printing)
+        // In real code: robot.setJointTorque(i, output);
+        std::cout << output << " ";
+    }
+    std::cout << std::endl;
 }
