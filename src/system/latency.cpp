@@ -1,6 +1,8 @@
 #include "latency.h"
 #include <cstdlib>
 
+
+/*
 LatencyBuffer::LatencyBuffer(int delay_steps, double drop_prob)
     : delay(delay_steps), drop_probability(drop_prob) {}
 
@@ -19,4 +21,11 @@ bool LatencyBuffer::pop(double& value) {
     value = buffer.front();
     buffer.pop();
     return true;
+}
+*/
+
+#include "latency.h"
+
+double Latency::measure() {
+    return 0.0;
 }

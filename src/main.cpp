@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <numeric>
 #include "robot/humanoid.h"
@@ -43,5 +44,33 @@ int main() {
     }
 
     std::cout << "Simulation finished.\n";
+    return 0;
+}
+*/
+
+#include <iostream>
+#include "robot/humanoid.h"
+#include "RL/vla.h"
+
+int main() {
+    Humanoid robot;
+    VLA_Policy policy;
+
+    for (int step = 0; step < 10; ++step) {
+        Observation obs;
+        obs.image = robot.getCameraImage();
+        obs.language = robot.getInstruction();
+        obs.state = robot.getJointState();
+
+        auto action = policy.act(obs);
+
+        std::cout << "Step " << step << " | Action: ";
+        for (double a : action)
+            std::cout << a << " ";
+        std::cout << std::endl;
+
+        robot.applyAction(action);
+    }
+
     return 0;
 }

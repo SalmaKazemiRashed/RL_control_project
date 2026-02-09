@@ -14,7 +14,8 @@ double PID::compute(double target, double current, double dt) {
 */
 
 #pragma once
-class PID {
-public:
-    double step(double target, double current);
-};
+#include "pid.h"
+
+double PID::step(double target, double current) {
+    return target - current;
+}

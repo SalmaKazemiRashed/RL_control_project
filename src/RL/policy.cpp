@@ -1,6 +1,6 @@
 #include "policy.h"
 #include <cstdlib>
-
+/*
 // This mimics policy-gradient intuition
 GaussianPolicy::GaussianPolicy(int dim_)   //Creates a policy with dim action dimensions
     : dim(dim_), lr(0.01), mean(dim_, 0.0) {}
@@ -21,3 +21,4 @@ void GaussianPolicy::update(const std::vector<double>&,
     for (int i = 0; i < dim; i++)
         mean[i] += lr * reward * action[i];  //mean += learning_rate × reward × action
 }
+*/

@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include <fstream>
 #include <iostream>
@@ -30,3 +31,10 @@ public:
 private:
     std::ofstream file;
 };
+*/
+#pragma once
+#include <iostream>
+
+inline void log(const char* msg) {
+    std::cout << msg << std::endl;
+}
